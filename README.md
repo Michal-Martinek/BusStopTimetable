@@ -1,4 +1,4 @@
-This project is originally _stolen_ from my friend, who made it as his semester project.
+This project is originally _stolen_ from [my friend](https://www.instagram.com/matygam09), who made it as his semester project.
 
 ## Original README
 > Moje semestrální práce se zabývá vytvořením webu, který má za úkol zobrazovat odjezdy MHD ve stanicích PID.  
