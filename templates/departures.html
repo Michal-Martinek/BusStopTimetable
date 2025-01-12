@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odjezdy {{ station_name }}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Odjezdy {{ station_name }} - nástupiště {{ station["platform"] }}</h1>
+    <h2>Směr: {{ destinations }}</h2>
+    <p>Linky: {{ lines }}</p>
+    <form action="{{ url_for('select_station') }}" method="get">
+        <button type="submit" class="btn btn-warning">Change Station</button>
+    </form>
+
+    <form method="GET" action="/">
+        <label for="linka">Filtruj dle linky:</label>
+        <input type="text" name="linka" id="linka" value="{{ linka }}" placeholder="Vložte číslo linky" />
+        <button type="submit">Filtrovat</button>
+        <a href="{{ url_for('index', linka='') }}">
+            <button type="button">Zrušit</button>
+        </a>
+    </form>
+
+    <table id="departureTable">
+        <thead>
+            <tr>
+                <th>Linka</th>
+                <th>Cílová stanice</th>
+                <th>Plánovaný čas odjezdu</th>
+                <th>Minut do odjezdu</th>
+                <th>Zpoždění</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for departure in departures %}
+            <tr>
+                <td>{{ departure.line }}</td>
+                <td>{{ departure.destination }}</td>
+                <td>{{ departure.depart_time }}</td>
+                <td>{{ departure.time_to_depart }}</td>
+                <td>{{ departure.delay }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <br>
+    <div id="mapa">
+        <iframe 
+            src="https://mapa.pid.cz" 
+            style="border:0;height:600px;width:100%;"
+            title="Mapa PID"
+        ></iframe>
+    </div>
+    <br>
+    <p style="font-size:80%;text-align:center;">©Matyáš Vitásek 2024</p>
+    <script>
+        //funkce na aktualizaci odjezdů
+        function updateDepartures() {
+            const linka = document.getElementById("linka").value;
+            fetch(`/refresh_departures?linka=${encodeURIComponent(linka)}`)
+                .then(response => response.json())
+                .then(departures => {
+                    const tableBody = document.querySelector('#departureTable tbody');
+                    tableBody.innerHTML = '';
+                    departures.forEach(departure => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${departure.line}</td>
+                            <td>${departure.destination}</td>
+                            <td>${departure.depart_time}</td>
+                            <td>${departure.time_to_depart}</td>
+                            <td>${departure.delay}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        //aktualizace výsledků každých 30 sekund
+        setInterval(updateDepartures, 30000);
+        updateDepartures();
+    </script>
+</body>
+</html>
