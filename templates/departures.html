@@ -8,6 +8,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         th, td {
             padding: 8px;
@@ -20,14 +22,10 @@
     </style>
 </head>
 <body>
-    <h1>Odjezdy {{ station_name }} - nástupiště {{ station["platform"] }}</h1>
-    <h2>Směr: {{ destinations }}</h2>
-    <p>Linky: {{ lines }}</p>
-    <form action="{{ url_for('select_station') }}" method="get">
-        <button type="submit" class="btn btn-warning">Change Station</button>
-    </form>
-
-    <form method="GET" action="/">
+    <h2 style="margin-bottom: 10px; white-space: nowrap;">Odjezdy {{ station_name }} - směr: {{ destinations }}</h2>
+    <!-- <p>Linky: {{ lines }}</p> -->
+    <button onclick="window.location.href='/select_station';" class="btn btn-warning" style="margin-right: 7px;">Zpět na výběr stanice</button>
+    <form method="GET" action="/" style="display: inline-block;">
         <label for="linka">Filtruj dle linky:</label>
         <input type="text" name="linka" id="linka" value="{{ linka }}" placeholder="Vložte číslo linky" />
         <button type="submit">Filtrovat</button>

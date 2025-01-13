@@ -40,6 +40,12 @@ def load_station_data():
     #     station_data=json.load(f)
     # stanice=station_data["stan"]
     return station_data
+def getDelay(linka):
+    if not linka["delay"]["is_available"]: return "xx:xx"
+    sekundy = linka["delay"]["seconds"]
+    sign = '- ' if sekundy < 0 else ''
+    sekundy = abs(sekundy)
+    return f'{sign}{sekundy // 60}:{sekundy % 60:02}'
 
 def get_departures(LINE_ID=""):
     departures = []  #seznam na presun dat do html
@@ -53,24 +59,13 @@ def get_departures(LINE_ID=""):
             #filtr busu dle linky
             if linka["route"]["short_name"] != LINE_ID:
                 continue
-
-        #vypočítání zpozdeni
-        if linka["delay"]["is_available"]:
-            minuty=linka["delay"]["minutes"]
-            sekundy=linka["delay"]["seconds"]
-            if minuty >= 1:
-                sekundy=sekundy-minuty*60
-            zpozdeni= f'{minuty}:{sekundy:02}'    
-        if not linka["delay"]["is_available"]: #pokud není danému spoji přiřazeno zpoždění, zobrazí se x
-            zpozdeni="xx:xx"
-
         #příprava dat na přesun        
         departures.append({
             "line": linka['route']['short_name'],
             "destination": linka['trip']['headsign'],
             "depart_time": linka["departure_timestamp"]["predicted"][11:19],
             "time_to_depart": linka["departure_timestamp"]["minutes"],
-            "delay": zpozdeni
+            "delay": getDelay(linka)
         })
     return departures
 
