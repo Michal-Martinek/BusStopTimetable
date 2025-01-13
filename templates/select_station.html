@@ -25,21 +25,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Vyberte Stanici</h1>
-        <form method="GET" action="/select_station">
-            <div class="mb-3">
-                <label for="station" class="form-label">Hledat stanici:</label>
-                <input 
-                    type="text" 
-                    id="station" 
-                    name="station" 
-                    class="form-control" 
-                    placeholder="Zadejte název stanice..." 
-                    value="{{ search_query }}" 
-                />
-            </div>
-            <button type="submit" class="btn btn-primary">Hledat</button>
-        </form>
+        <!-- <h1 class="text-center">Vyberte Stanici</h1> -->
         <script>
             function submitForm() {
                 document.getElementById('form').submit();
@@ -52,15 +38,29 @@
                     <input type="radio" onclick="submitForm()" id="{{ station['gtfsIds'] }}" name="station_gtfsid" value="{{ station['gtfsIds'] }}">
                     <label for="{{ station['gtfsIds'] }}">
                         <strong>{{ station['altIdosName'] }}</strong> - Platform {{ station['platform'] }}<br>
-                        <small>Lines: {{ station['lines'] }}</small>
+                        <!-- <small>Lines: {{ station['lines'] }}</small> -->
                     </label>
                 </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-success mt-3">Potvrdit výběr</button>
+            <!-- <button type="submit" class="btn btn-success mt-3">Potvrdit výběr</button> -->
+        </form>
+        <form method="GET" action="/select_station">
+            <div class="mb-3" style="margin-top: 20px;">
+                <label for="station" class="form-label">Hledat stanici:</label>
+                <input 
+                    type="text" 
+                    id="station" 
+                    name="station" 
+                    class="form-control" 
+                    placeholder="Zadejte název stanice..." 
+                    value="{{ search_query }}" 
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">Hledat</button>
         </form>
     </div>
     <br>
-    <p style="font-size:80%;text-align:center;">©Matyáš Vitásek 2024</p>
+    <p style="font-size:80%;text-align:center;">Matyáš Vitásek, Michal Martínek 2025</p>
 </body>
 </html>
