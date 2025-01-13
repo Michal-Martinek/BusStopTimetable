@@ -78,6 +78,8 @@ def index():
     station = session.get("station")
     line_filter = request.args.get("linka", "").strip()
     departures = get_departures(line_filter)
+    destinations = (line[1] for line in station['lines'])
+    destinations = ', '.join(set(destinations))
     linesRender = ', '.join([' ⇒ '.join(line) for line in station['lines']])
     return render_template(
         "departures.html",
@@ -85,7 +87,7 @@ def index():
         linka=line_filter,
         station_name=session.get("station_name"),
         station=station,
-        destinations=', '.join([line[1] for line in station['lines']]),
+        destinations=destinations,
         lines=linesRender,
         similar_stations=session.get("similar_stations"),
     )
