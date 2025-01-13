@@ -56,6 +56,23 @@
             {% endfor %}
         </tbody>
     </table>
+    <script>
+        function colorcodeRows() {
+            let rows = document.getElementById("departureTable").rows;
+            let linesFound = new Set();
+            for (let i = 1; i < rows.length; i++) { // Start at 1 to skip the header row
+                const row = rows[i];
+                const lineNum = row.cells[0].innerText;
+                console.log(`Row ${i}, line ${lineNum}`);
+                if (!linesFound.has(lineNum)) {
+                    linesFound.add(lineNum)
+                    row.style.backgroundColor = "#eee"
+                    row.cells[0].style = "font-weight: bold; font-size: 1.1em";
+                }
+            }
+        }
+        colorcodeRows()
+    </script>
     
     <br>
     <div id="mapa">
@@ -87,13 +104,13 @@
                         `;
                         tableBody.appendChild(row);
                     });
+                    colorcodeRows();
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
         //aktualizace výsledků každých 30 sekund
         setInterval(updateDepartures, 30000);
-        updateDepartures();
     </script>
 </body>
 </html>
