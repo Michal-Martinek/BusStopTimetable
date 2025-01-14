@@ -111,6 +111,12 @@
 
         //aktualizace výsledků každých 30 sekund
         setInterval(updateDepartures, 30000);
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                updateDepartures();
+            }
+        });
     </script>
 </body>
 </html>
