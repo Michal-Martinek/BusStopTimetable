@@ -25,7 +25,7 @@ headers = {
 params = {
     "ids[]": STOP_ID,  # GTFS ID zastavky
     "minutesBefore": 1,  # x minut pred aktualnim casem
-    "minutesAfter": 40,   # x minut po aktualnim case
+    "minutesAfter": 100,   # x minut po aktualnim case
     "limit": 20,  #kolik vysledku stahnu ze serveru
     #"includeMetroTrains": False,-rozbije kod
     "mode": "departures",

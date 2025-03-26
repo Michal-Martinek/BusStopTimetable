@@ -77,7 +77,8 @@
     <br>
     <div id="mapa">
         <iframe 
-            src="https://mapa.pid.cz" 
+            src="https://mapa.pid.cz/?zoom=15.0&lat={{ station['coords'][0] }}&lon={{ station['coords'][1] }}"
+                TODO="zapnout zastávky"
             style="border:0;height:600px;width:100%;"
             title="Mapa PID"
         ></iframe>
