@@ -32,14 +32,8 @@ params = {
     "order": "real"}
 
 def load_station_data():
-    #>>>>>>>>>je potřeba vložit přesný path k souboru outp_zast.txt<<<<<<<<<<<<<<
     with open("outp_zast.txt", encoding="utf8") as f:
-        station_data=f.read()
-        station_data=json.loads(station_data)
-    # with open("outp_zast.json", encoding="utf8") as f:
-    #     station_data=json.load(f)
-    # stanice=station_data["stan"]
-    return station_data
+        return json.load(f)
 def getDelay(linka):
     if not linka["delay"]["is_available"]: return "xx:xx"
     sekundy = linka["delay"]["seconds"]
@@ -92,21 +86,21 @@ def index():
         similar_stations=session.get("similar_stations"),
     )
 
+def getMatchingStations(stations, search_query):
+    if not search_query: return []
+    return [
+        station for station in stations if station["altIdosName"].lower().startswith(search_query)
+    ][:20] # číslo omezí počet výsledků->aby netrvalo hledání moc dlouho
+
 @app.route('/select_station', methods=["GET", "POST"])
 def select_station():
-    #stanice, které chceme, aby byly přístupné při prvním načtení, ty si uživatel může libovolně nakopírovat z dokumentu outp_zast.txt
-    common_stations=[
-        # {"altIdosName": "Ládví", "platform": "D", "gtfsIds": "U78Z4P", "lines": "103->Ďáblice, 152->Českomoravská, 166->Sídliště Čakovice, 177->Chodov"},
-        # {"altIdosName": "Vítězné náměstí", "platform": "O", "gtfsIds": "U321Z3P", "lines": "8->Starý Hloubětín, 18->Vozovna Pankrác, 20->Sídliště Barrandov, 26->Nádraží Hostivař, 143->Stadion Strahov, 149->Stodůlky-Bavorská, 180->Obchodní centrum Zličín"},
-        # {"altIdosName": "Vítězné náměstí", "platform": "P", "gtfsIds": "U321Z4P", "lines": "8->Nádraží Podbaba, 18->Nádraží Podbaba, 20->Dědina, 26->Dědina"},
-        # {"altIdosName": "Florenc", "platform": "B", "gtfsIds": "U689Z2P", "lines": "3->Kobylisy, 8->Starý Hloubětín, 12->Lehovec, 24->Vozovna Kobylisy"}
-
-        {"altIdosName": "Dvořákova", "platform": "A", "gtfsIds": "U3239Z1P", "lines": "169->Kobylisy, 202->Čakovice"},
-        {"altIdosName": "Dvořákova", "platform": "B", "gtfsIds": "U3239Z2P", "lines": "169->Sídliště Čimice, 202->Poliklinika Mazurská"},
-        {"altIdosName": "Odra", "platform": "A", "gtfsIds": "U511Z1P", "lines": "177->Poliklinika Mazurská, 200->Sídliště Bohnice, 202->Poliklinika Mazurská, 235->Podhoří"},
-        {"altIdosName": "Odra", "platform": "B", "gtfsIds": "U511Z2P", "lines": "177->Chodov, 200->Kobylisy, 202->Čakovice, 235->Nemocnice Bohnice"},
-
-    ]
+    # stanice, které chceme, aby byly přístupné při prvním načtení, ty si uživatel může libovolně nakopírovat z dokumentu outp_zast.txt
+    # common_stations = [
+    #     {"altIdosName": "Dvořákova", "platform": "A", "gtfsIds": "U3239Z1P", "lines": "169->Kobylisy, 202->Čakovice"},
+    #     {"altIdosName": "Dvořákova", "platform": "B", "gtfsIds": "U3239Z2P", "lines": "169->Sídliště Čimice, 202->Poliklinika Mazurská"},
+    #     {"altIdosName": "Odra", "platform": "A", "gtfsIds": "U511Z1P", "lines": "177->Poliklinika Mazurská, 200->Sídliště Bohnice, 202->Poliklinika Mazurská, 235->Podhoří"},
+    #     {"altIdosName": "Odra", "platform": "B", "gtfsIds": "U511Z2P", "lines": "177->Chodov, 200->Kobylisy, 202->Čakovice, 235->Nemocnice Bohnice"},
+    # ]
     gtfsid = request.form.get("station_gtfsid")
     stations = load_station_data()
     if gtfsid:
@@ -119,20 +113,11 @@ def select_station():
             return redirect(url_for("index"))
 
     search_query = request.args.get("station", "").strip().lower()
-    if not search_query: #pokud uzivatel nic nevyhledal, tak se zobrazi common stanice
-        return render_template(
-        "select_station.html",
-        stations=common_stations,
-        search_query="")
-    
-    matching_stations = [
-        station for station in stations if station["altIdosName"].lower().startswith(search_query)
-    ][:20] #číslo omezí počet výsledků->aby netrvalo hledání moc dlouho
-
     return render_template(
         "select_station.html",
-        stations=matching_stations,
-        search_query=search_query)
+        stations=getMatchingStations(stations, search_query),
+        search_query=search_query
+    )
 
 @app.route('/refresh_departures', methods=["GET"])
 def refresh_departures(): #automatická aktualizace odjezdů
