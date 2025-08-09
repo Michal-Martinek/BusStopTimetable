@@ -52,23 +52,10 @@
             }
         </script>
         <form method="POST" action="/select_station" id="form">
-            <div class="station-list">
-                {% if search_query != "" %}
-                    {% for station in stations %}
-                    <div class="station-item">
-                        <input type="radio" onclick="submitForm()" id="{{ station['gtfsIds'] }}" name="station_gtfsid" value="{{ station['gtfsIds'] }}">
-                        <label for="{{ station['gtfsIds'] }}">
-                            <strong>{{ station['altIdosName'] }}</strong> - Platform {{ station['platform'] }}<br>
-                            <small>
-                                Linky:
-                                {% for l in station['lines'] %}
-                                    <b>{{ l[0] }}</b> > {{ l[1] }}{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </small>
-                        </label>
-                    </div>
-                    {% endfor %}
-                {% else %}
+            {% if search_query != "" %}
+                {% include "render_stops.html" %}
+            {% else %}
+                <div class="station-list">
                     <div class="station-item">
                         <div style="text-align: center;"><strong>Dvořákova</strong></div>
                         <div class="direction-buttons">
@@ -155,10 +142,19 @@
                             </button>
                         </div>
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
             <!-- <button type="submit" class="btn btn-success mt-3">Potvrdit výběr</button> -->
         </form>
+        {% if search_query == "" %}
+            <div id="nearby-stops" style="margin-top: 1em;">
+                <h3>Nejbližší zastávky</h3>
+                <div class="results">
+                    Hledám nejbližší zastávky...
+                </div>
+                <script src="{{url_for('static', filename='get_stops_nearby.js')}}"></script>
+            </div>
+        {% endif %}
         <form method="GET" action="/select_station">
             <div class="mb-3" style="margin-top: 20px;">
                 <label for="station" class="form-label">Hledat stanici:</label>

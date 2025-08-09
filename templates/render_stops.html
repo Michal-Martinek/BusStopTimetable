@@ -1,0 +1,16 @@
+<div class="station-list">
+	{% for station in stations %}
+		<div class="station-item">
+			<input type="radio" onclick="submitForm()" id="{{ station['gtfsIds'] }}" name="station_gtfsid" value="{{ station['gtfsIds'] }}">
+			<label for="{{ station['gtfsIds'] }}">
+				<strong>{{ station['altIdosName'] }}</strong> - Platform {{ station['platform'] }}<br>
+				<small>
+					Linky:
+					{% for l in station['lines'] %}
+						<b>{{ l[0] }}</b> > {{ l[1] }}{% if not loop.last %}, {% endif %}
+					{% endfor %}
+				</small>
+			</label>
+		</div>
+	{% endfor %}
+</div>

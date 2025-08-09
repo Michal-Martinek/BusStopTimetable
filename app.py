@@ -1,7 +1,10 @@
+import functools
 from flask import Flask, request, render_template, redirect, url_for, session, jsonify
 import requests
 import json
 import os
+import math
+
 os.chdir(os.path.dirname(__file__))
 
 #ke spuštění je potřeba si nainstalovat flask, requests a změnit cestu k souboru se zastávkami-viz níže (řád. 34,35)
@@ -31,6 +34,7 @@ params = {
     "mode": "departures",
     "order": "real"}
 
+@functools.cache
 def load_station_data():
     with open("outp_zast.txt", encoding="utf8") as f:
         return json.load(f)
@@ -94,13 +98,6 @@ def getMatchingStations(stations, search_query):
 
 @app.route('/select_station', methods=["GET", "POST"])
 def select_station():
-    # stanice, které chceme, aby byly přístupné při prvním načtení, ty si uživatel může libovolně nakopírovat z dokumentu outp_zast.txt
-    # common_stations = [
-    #     {"altIdosName": "Dvořákova", "platform": "A", "gtfsIds": "U3239Z1P", "lines": "169->Kobylisy, 202->Čakovice"},
-    #     {"altIdosName": "Dvořákova", "platform": "B", "gtfsIds": "U3239Z2P", "lines": "169->Sídliště Čimice, 202->Poliklinika Mazurská"},
-    #     {"altIdosName": "Odra", "platform": "A", "gtfsIds": "U511Z1P", "lines": "177->Poliklinika Mazurská, 200->Sídliště Bohnice, 202->Poliklinika Mazurská, 235->Podhoří"},
-    #     {"altIdosName": "Odra", "platform": "B", "gtfsIds": "U511Z2P", "lines": "177->Chodov, 200->Kobylisy, 202->Čakovice, 235->Nemocnice Bohnice"},
-    # ]
     gtfsid = request.form.get("station_gtfsid")
     stations = load_station_data()
     if gtfsid:
@@ -117,6 +114,31 @@ def select_station():
         "select_station.html",
         stations=getMatchingStations(stations, search_query),
         search_query=search_query
+    )
+
+def haversineDistance(stop, lat, lon):
+    '''eastimate of distance on curved surface of Earth'''
+    lat2, lon2 = stop['coords']
+    R = 6371.0  # Earth radius in kilometers
+    dlat = math.radians(lat2 - lat)
+    dlon = math.radians(lon2 - lon)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return R * c # distance in km
+
+@app.route('/get_stops_nearby', methods=["GET"])
+def get_stops_nearby(max_results=7):
+    try:
+        lat = float(request.args["lat"])
+        lon = float(request.args["lon"])
+    except (KeyError, ValueError):
+        return "Error při hledání nejbližších zastávek"
+    stations = load_station_data()
+    nearby = sorted(stations, key=lambda stop: haversineDistance(stop, lat, lon))[:max_results]
+    return render_template(
+        "render_stops.html",
+        stations=nearby,
+        search_query=""
     )
 
 @app.route('/refresh_departures', methods=["GET"])
