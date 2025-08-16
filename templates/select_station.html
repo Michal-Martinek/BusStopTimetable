@@ -95,15 +95,17 @@
         <div>
             <h3>Hledat stanici</h3>
             <form method="GET" action="/select_station">
-                <input 
+                <div class="input-group">
+                    <input 
                     type="text" 
                     id="station" 
                     name="station" 
                     class="form-control" 
                     placeholder="Zadejte název stanice..." 
                     value="{{ search_query }}" 
-                />
-                <button type="submit" class="btn btn-primary">Hledat</button>
+                    />
+                    <button type="submit" class="btn btn-primary">Hledat</button>
+                </div>
             </form>
         </div>
     </div>
