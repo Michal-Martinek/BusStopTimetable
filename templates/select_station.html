@@ -39,6 +39,25 @@
         .direction-unused {
             background-color: #fafafa;
         }
+        button.refresh-nearby {
+            float: right;
+            border: none;
+        }
+        .refresh-nearby img {
+            height: 1em;
+            width: 1em;
+        }
+        @keyframes spin {
+            to {
+                rotate: 360deg;
+            }
+        }
+        .refresh-nearby:hover img {
+            scale: 1.1;
+        }
+        .fetching .refresh-nearby img {
+            animation: spin 2s infinite linear;
+        }
     </style>
 </head>
 <body>
@@ -144,7 +163,13 @@
         {% endif %}
         {% if search_query == "" %}
             <div id="nearby-stops" style="margin-top: 1em;">
-                <h3>Nejbližší zastávky</h3>
+                <h3>
+                    Nejbližší zastávky
+                    <button class="refresh-nearby" type="button"
+                        title="refresh nearby stops" onclick="refreshNearbyStops()">
+                        <img src="/static/refresh.svg" alt="refresh nearby stops">
+                    </button>
+                </h3>
                 <div class="results">
                     Hledám nejbližší zastávky...
                 </div>

@@ -21,7 +21,8 @@ function positionCallback(position) {
 	})
 	.then(response => response.text())
 	.then(response => renderStops(response))
-	.catch(err => console.error("Error sending coords:", err));
+	.catch(err => console.error("Error sending coords:", err))
+	.finally(() => document.getElementById('nearby-stops').classList.remove('fetching'));
 };
 
 function getStopsNearby() {
@@ -36,7 +37,13 @@ function getStopsNearby() {
 		outputText("Geolocation not supported");
 	}
 }
+function refreshNearbyStops() {
+	let div = document.getElementById('nearby-stops')
+	if (div.classList.contains('fetching')) return;
+	div.classList.add('fetching');
+	getStopsNearby();
+}
 
 addEventListener("DOMContentLoaded", (event) => {
-	getStopsNearby();
+	refreshNearbyStops();
 });
