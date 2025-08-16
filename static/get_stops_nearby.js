@@ -8,7 +8,7 @@ function renderStops(response) {
 	console.log(`Got ${count} nearby stops`)
 	outputText(response)
 }
-function positionCallback(position) {
+function positionCallback(position, moreStops=false) {
 	const coords = {
 		latitude: position.coords.latitude,
 		longitude: position.coords.longitude
@@ -16,7 +16,10 @@ function positionCallback(position) {
 	// TODO check good data
 	console.log("Measured coords:", coords);
 
-	fetch(`/get_stops_nearby?lat=${coords['latitude']}&lon=${coords['longitude']}`, {
+	const currCount = document.querySelectorAll('#nearby-stops .results .station-item').length;
+	const newCount = Math.max(currCount + 5 * moreStops, 7);
+	let url = `/get_stops_nearby?lat=${coords['latitude']}&lon=${coords['longitude']}&count=${newCount}`;
+	fetch(url, {
 		method: "GET",
 	})
 	.then(response => response.text())
@@ -25,10 +28,10 @@ function positionCallback(position) {
 	.finally(() => document.getElementById('nearby-stops').classList.remove('fetching'));
 };
 
-function getStopsNearby() {
+function getStopsNearby(moreStops) {
 	if ("geolocation" in navigator) {
 		navigator.geolocation.getCurrentPosition(
-			positionCallback,
+			(loc) => positionCallback(loc, moreStops),
 			function (error) {
 				outputText("Error getting location <i>(zkontrolujte povolení GPS)</i><br>" + error);
 			}
@@ -37,11 +40,11 @@ function getStopsNearby() {
 		outputText("Geolocation not supported");
 	}
 }
-function refreshNearbyStops() {
+function refreshNearbyStops(moreStops=false) {
 	let div = document.getElementById('nearby-stops')
 	if (div.classList.contains('fetching')) return;
 	div.classList.add('fetching');
-	getStopsNearby();
+	getStopsNearby(moreStops);
 }
 
 addEventListener("DOMContentLoaded", (event) => {

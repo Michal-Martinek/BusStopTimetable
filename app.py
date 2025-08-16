@@ -127,14 +127,15 @@ def haversineDistance(stop, lat, lon):
     return R * c # distance in km
 
 @app.route('/get_stops_nearby', methods=["GET"])
-def get_stops_nearby(max_results=7):
+def get_stops_nearby(min_count=7):
     try:
         lat = float(request.args["lat"])
         lon = float(request.args["lon"])
     except (KeyError, ValueError):
         return "Error při hledání nejbližších zastávek"
     stations = load_station_data()
-    nearby = sorted(stations, key=lambda stop: haversineDistance(stop, lat, lon))[:max_results]
+    count = int(request.args.get('count', '0'))
+    nearby = sorted(stations, key=lambda stop: haversineDistance(stop, lat, lon))[:max(count, min_count)]
     return render_template(
         "render_stops.html",
         stations=nearby,
