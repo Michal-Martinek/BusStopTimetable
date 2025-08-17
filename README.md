@@ -1,7 +1,10 @@
 This project is originally _stolen_ from [my friend](https://www.instagram.com/matygam09), who made it as his semester project.
 
 ## Features
-- [x] PID mapa se zoomuje na právě vybranou stanici
+- [x] shows time to departure (including current delay) for all upcoming connections
+- [x] showing nearby stops based on GPS distance
+- [x] PID map showing vehicles near current station
+- [ ] fast GPS action, reliable positioninga
 
 ## Original README
 > Moje semestrální práce se zabývá vytvořením webu, který má za úkol zobrazovat odjezdy MHD ve stanicích PID.  
