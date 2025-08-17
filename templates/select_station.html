@@ -66,6 +66,15 @@
         .fetching .refresh-nearby img {
             animation: spin 2s infinite linear;
         }
+
+        footer a.btn {
+            gap: 0.3rem;
+            margin-left: .5em;
+        }
+        footer a.btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -122,8 +131,17 @@
                 <script src="{{url_for('static', filename='get_stops_nearby.js')}}"></script>
             </div>
         {% endif %}
-        <footer>
-            <small class="text-center d-block">Matyáš Vitásek, Michal Martínek 2025</small>
+        <footer class="text-center py-3">
+            <p>
+                <i class="bi bi-c-circle"></i> Matyáš Vitásek, Michal Martínek 2025
+                <a href="https://github.com/Michal-Martinek/BusStopTimetable"
+                    target="_blank" rel="noopener noreferrer"
+                    class="btn btn-dark btn-sm d-inline-flex align-items-center"
+                >
+                    <i class="bi bi-github"></i>
+                    GitHub
+                </a>
+            </p>
         </footer>
     </div>
 </body>
