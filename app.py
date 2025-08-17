@@ -100,7 +100,7 @@ def getMatchingStations(stations, search_query, max_count=20):
         'num_matching_stations': len(matching)
     }
 
-@app.route('/select_station', methods=["GET", "POST"])
+@app.route('/select_station', methods=["GET"])
 def select_station():
     gtfsid = request.form.get("station_gtfsid")
     stations = load_station_data()
