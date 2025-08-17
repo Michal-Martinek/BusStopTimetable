@@ -7,8 +7,11 @@
 					<strong>{{ station['altIdosName'] }}</strong> - Platform {{ station['platform'] }}<br>
 					<small>
 						Linky:
-						{% for l in station['lines'] %}
-							<b>{{ l[0] }}</b> > {{ l[1] }}{% if not loop.last %}, {% endif %}
+						{% for dest, lines in station['lines'].items() %}
+							{% for line in lines %}
+								<b class="line-type-{{ line[1] }} {{ 'regional' if (line[0]|int) > 250 else ''}}">{{ line[0] }}</b>{% if not loop.last %}, {% endif %}
+							{% endfor %}
+							<i class="bi bi-arrow-right"></i> {{ dest }}{% if not loop.last %} • {% endif %}
 						{% endfor %}
 					</small>
 				</label>
