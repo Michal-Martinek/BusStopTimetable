@@ -102,7 +102,7 @@ def getMatchingStations(stations, search_query, max_count=20):
 
 @app.route('/select_station', methods=["GET"])
 def select_station():
-    gtfsid = request.form.get("station_gtfsid")
+    gtfsid = request.args.get("station_gtfsid")
     stations = load_station_data()
     if gtfsid:
         selected_station = next((s for s in stations if s["gtfsIds"] == gtfsid), None)

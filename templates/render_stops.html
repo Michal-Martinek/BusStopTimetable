@@ -2,8 +2,8 @@
 	<div class="station-list">
 		{% for station in stations %}
 			<div class="station-item hoverable">
-				<input type="radio" onchange="this.form.submit()" id="{{ station['gtfsIds'] }}" name="station_gtfsid" value="{{ station['gtfsIds'] }}">
-				<label for="{{ station['gtfsIds'] }}">
+				<input type="radio" class="d-none" onchange="this.form.submit()" id="{{ station['gtfsIds'] }}" name="station_gtfsid" value="{{ station['gtfsIds'] }}">
+				<label for="{{ station['gtfsIds'] }}" class="d-block p-2 w-100">
 					<strong>{{ station['altIdosName'] }}</strong> - Platform {{ station['platform'] }}<br>
 					<small>
 						Linky:
