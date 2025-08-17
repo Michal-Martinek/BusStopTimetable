@@ -1,7 +1,11 @@
 
+function stopFetchingState() {
+	document.getElementById('nearby-stops').classList.remove('fetching');
+}
 function outputText(text) {
 	const outpDiv = document.querySelector("#nearby-stops .results")
 	outpDiv.innerHTML = text;
+	stopFetchingState();
 }
 function renderStops(response) {
 	var count = (response.match(/station-item/g) || []).length;
@@ -25,7 +29,7 @@ function positionCallback(position, moreStops=false) {
 	.then(response => response.text())
 	.then(response => renderStops(response))
 	.catch(err => console.error("Error sending coords:", err))
-	.finally(() => document.getElementById('nearby-stops').classList.remove('fetching'));
+	.finally(stopFetchingState);
 };
 
 function getStopsNearby(moreStops) {
