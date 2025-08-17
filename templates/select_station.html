@@ -77,21 +77,6 @@
             {% endif %}
             {% include "premade/cimice-vozovna-bohnice.html" %}
         {% endif %}
-        {% if search_query == "" %}
-            <div id="nearby-stops">
-                <h3>
-                    Nejbližší zastávky
-                    <button class="refresh-nearby" type="button"
-                        title="refresh nearby stops" onclick="refreshNearbyStops()">
-                        <img src="/static/refresh.svg" alt="refresh nearby stops">
-                    </button>
-                </h3>
-                <div class="results">
-                    Hledám nejbližší zastávky...
-                </div>
-                <script src="{{url_for('static', filename='get_stops_nearby.js')}}"></script>
-            </div>
-        {% endif %}
         <div>
             <h3>Hledat stanici</h3>
             <form method="GET" action="/select_station">
@@ -108,9 +93,24 @@
                 </div>
             </form>
         </div>
+        {% if search_query == "" %}
+            <div id="nearby-stops">
+                <h3>
+                    Nejbližší zastávky
+                    <button class="refresh-nearby" type="button"
+                        title="refresh nearby stops" onclick="refreshNearbyStops()">
+                        <img src="/static/refresh.svg" alt="refresh nearby stops">
+                    </button>
+                </h3>
+                <div class="results">
+                    Hledám nejbližší zastávky...
+                </div>
+                <script src="{{url_for('static', filename='get_stops_nearby.js')}}"></script>
+            </div>
+        {% endif %}
+        <footer>
+            <small class="text-center d-block">Matyáš Vitásek, Michal Martínek 2025</small>
+        </footer>
     </div>
-    <footer>
-        <small class="text-center d-block">Matyáš Vitásek, Michal Martínek 2025</small>
-    </footer>
 </body>
 </html>
