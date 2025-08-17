@@ -14,6 +14,21 @@
 				</label>
 			</div>
 		{% endfor %}
-		<button type="button" class="btn btn-secondary d-block mx-auto mt-2" onclick="refreshNearbyStops(true)">Více</button>
+		{% if not no_more_stations %}
+			<button type="button" class="more-btn btn btn-outline-secondary d-block mx-auto mt-1 btn-sm"
+				{% if search_query == "" %}
+					onclick="refreshNearbyStops(true)"
+				{% else %}
+					onclick="
+						const params = new URLSearchParams(window.location.search);
+						const currentCount = parseInt(params.get('count') || 20);
+						params.set('count', currentCount + 10);
+						window.location.search = params.toString();
+					"
+				{% endif %}
+				>
+				<i class="bi bi-plus-circle me-1"></i>Více
+			</button>
+		{% endif %}
 	</div>
 </form>

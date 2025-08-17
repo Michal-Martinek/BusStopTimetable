@@ -90,11 +90,14 @@ def index():
         similar_stations=session.get("similar_stations"),
     )
 
-def getMatchingStations(stations, search_query):
-    if not search_query: return []
-    return [
-        station for station in stations if station["altIdosName"].lower().startswith(search_query)
-    ][:20] # číslo omezí počet výsledků->aby netrvalo hledání moc dlouho
+def getMatchingStations(stations, search_query, max_count=20):
+    matching = []
+    if search_query:
+        matching = [station for station in stations if station["altIdosName"].lower().startswith(search_query)]
+    return {
+        'stations': matching[:max_count],
+        'no_more_stations': len(matching) <= max_count
+    }
 
 @app.route('/select_station', methods=["GET", "POST"])
 def select_station():
@@ -112,7 +115,7 @@ def select_station():
     search_query = request.args.get("station", "").strip().lower()
     return render_template(
         "select_station.html",
-        stations=getMatchingStations(stations, search_query),
+        **getMatchingStations(stations, search_query, request.args.get("count", default=20, type=int)),
         search_query=search_query
     )
 
