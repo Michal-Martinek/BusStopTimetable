@@ -14,7 +14,7 @@
 				</label>
 			</div>
 		{% endfor %}
-		{% if not no_more_stations %}
+		{% if num_matching_stations|default(100) > stations|length %}
 			<button type="button" class="more-btn btn btn-outline-secondary d-block mx-auto mt-1 btn-sm"
 				{% if search_query == "" %}
 					onclick="refreshNearbyStops(true)"

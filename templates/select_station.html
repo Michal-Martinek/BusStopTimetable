@@ -70,13 +70,25 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="text-center">Vyberte Stanici</h1>
+        <header>
+            <h1 class="text-center">Vyberte Stanici</h1>
+            {% if search_query != "" %}
+                <nav>
+                    <a class="btn btn-primary btn-sm me-2" href="/select_station">
+                        <i class="bi bi-chevron-left"></i> Zpět
+                    </a>
+                    {% if stations|length > 0 %}
+                        <span>Nalezeno {{ num_matching_stations }} stanic.</span>
+                    {% else %}
+                        <span class="text-danger d-none d-sm-inline">Pro zadané vyhledávání nebyla nalezena žádná stanice.</span>
+                        <span class="text-danger d-inline d-sm-none">Žádná stanice neodpovídá.</span>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        </header>
         {% if search_query != "" and stations|length > 0 %}
             {% include "render_stops.html" %}
         {% else %}
-            {% if search_query != "" %}
-                <p class="text-danger">Pro zadané vyhledávání nebyla nalezena žádná stanice.</p>
-            {% endif %}
             {% include "premade/cimice-vozovna-bohnice.html" %}
         {% endif %}
         <div>

@@ -93,10 +93,11 @@ def index():
 def getMatchingStations(stations, search_query, max_count=20):
     matching = []
     if search_query:
+        # TODO beter matching
         matching = [station for station in stations if station["altIdosName"].lower().startswith(search_query)]
     return {
         'stations': matching[:max_count],
-        'no_more_stations': len(matching) <= max_count
+        'num_matching_stations': len(matching)
     }
 
 @app.route('/select_station', methods=["GET", "POST"])
